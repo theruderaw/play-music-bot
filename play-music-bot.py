@@ -48,7 +48,7 @@ async def w(ctx, *, city: str):
         data = response.json()
         times(data['location']['localtime'])
         if response.status_code == 200:
-            res = f'''Displaying weather for {data['location']['name']}, {data['location']['country']} at {times(data['location']['localtime'])}- Temperature = {data['current']['temp_c']}\u00B0C'''
+            res = f'''{ctx.author.mention} Displaying weather for {data['location']['name']}, {data['location']['country']} at {times(data['location']['localtime'])}- Temperature = {data['current']['temp_c']}\u00B0C'''
             await ctx.send(res)
 
         
