@@ -1,16 +1,56 @@
-# bot.py
-import os
-
 import discord
+from discord.ext import commands
+import os
+import requests
+import traceback
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")  # Add this to your .env file
 
-client = discord.Client(intents=discord.Intents.default())
+intents = discord.Intents.default()
+intents.message_content = True
 
-@client.event
+maps = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December"
+}
+
+def times(time):
+     date,time = time.split(' ')
+     dates = date.split('-')[::-1]
+     res = [str(int(dates[0])),maps[int(dates[1])],dates[2]]
+
+     return ' '.join(res)+' '+time
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+@bot.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    print(f"Bot logged in as {bot.user}")
 
-client.run(TOKEN)
+@bot.command()
+async def w(ctx, *, city: str):
+        # Get weather data
+        url = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API_KEY}&q={city}&aqi=no"
+        response = requests.get(url)
+        data = response.json()
+        times(data['location']['localtime'])
+        if response.status_code == 200:
+            res = f'''Displaying weather for {data['location']['name']}, {data['location']['country']} at {times(data['location']['localtime'])}- Temperature = {data['current']['temp_c']}\u00B0C'''
+            await ctx.send(res)
+
+        
+
+bot.run(DISCORD_TOKEN)
