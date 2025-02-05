@@ -9,9 +9,6 @@ load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")  # Add this to your .env file
 
-intents = discord.Intents.default()
-intents.message_content = True
-
 maps = {
     1: "January",
     2: "February",
@@ -33,6 +30,9 @@ def times(time):
      res = [str(int(dates[0])),maps[int(dates[1])],dates[2]]
 
      return ' '.join(res)+' '+time
+
+intents = discord.Intents.default()
+intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
