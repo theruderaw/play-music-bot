@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import requests
+from random import randrange
 import traceback
 from dotenv import load_dotenv
 
@@ -51,6 +52,15 @@ async def w(ctx, *, city: str):
             res = f'''{ctx.author.mention} Displaying weather for {data['location']['name']}, {data['location']['country']} at {times(data['location']['localtime'])}- Temperature = {data['current']['temp_c']}\u00B0C'''
             await ctx.send(res)
 
-        
+@bot.command()
+async def random(ctx, *, params:str):
+    if ' ' in params:
+        min,max = map(int,params.split(' '))
+    else:
+        min = 1
+        max = int(params)
+    choice = randrange(min,max+1)
+    res = f'''{ctx.author.mention} your choice between {min} and {max} is {choice}'''
+    await ctx.send(res)
 
 bot.run(DISCORD_TOKEN)
